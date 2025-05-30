@@ -10,7 +10,7 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.kotlearn.jetpack_navigation_3"
+        applicationId = "com.kotlearn.jetpack_navigation_3_bottomnav"
         minSdk = 26
         targetSdk = 36
         versionCode = 1
@@ -41,6 +41,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":home"))
     implementation(project(":notes"))
 
     // Core runtime for Jetpack Navigation 3 library — provides navigation components and APIs

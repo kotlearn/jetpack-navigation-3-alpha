@@ -9,9 +9,6 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
-        maven {
-            url = uri("https://androidx.dev/snapshots/builds/13508953/artifacts/repository")
-        }
     }
 }
 dependencyResolutionManagement {
@@ -19,13 +16,12 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven {
-            url = uri("https://androidx.dev/snapshots/builds/13508953/artifacts/repository")
-        }
     }
 }
 
 rootProject.name = "jetpack_navigation_3"
 include(":navigation2")
 include(":navigation3")
+include(":navigation3-bottomnav")
 include(":notes")
+include(":home")

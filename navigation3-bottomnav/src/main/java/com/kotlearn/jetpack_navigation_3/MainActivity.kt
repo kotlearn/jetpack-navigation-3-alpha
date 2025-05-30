@@ -7,18 +7,26 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
-import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entry
+import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
+import com.kotlearn.jetpack_navigation_3.home.HomeDetailScreen
+import com.kotlearn.jetpack_navigation_3.home.HomeScreen
 import com.kotlearn.jetpack_navigation_3.notes.NoteCreateScreen
 import com.kotlearn.jetpack_navigation_3.notes.NoteDetailScreen
 import com.kotlearn.jetpack_navigation_3.notes.NoteEditScreen
 import com.kotlearn.jetpack_navigation_3.notes.NoteListScreen
 import com.kotlearn.jetpack_navigation_3.ui.theme.Jetpack_navigation_3Theme
 import kotlinx.serialization.Serializable
+
+@Serializable
+data object Home : NavKey
+
+@Serializable
+data object HomeDetail : NavKey
 
 @Serializable
 data object NoteList : NavKey
@@ -38,71 +46,62 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Jetpack_navigation_3Theme {
+                val backStack = rememberNavBackStack(Home)
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val screenModifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding)
-                    val backStack = rememberNavBackStack(NoteList)
-
                     NavDisplay(
                         backStack = backStack,
-                    ) { route ->
-                        when (route) {
-                            is NoteList -> NavEntry(route) {
+                        onBack = { backStack.removeLastOrNull() },
+                        entryProvider = entryProvider {
+                            entry<Home> {
+                                HomeScreen(
+                                    onDetailClick = { backStack.add(HomeDetail) },
+                                    modifier = screenModifier
+                                )
+                            }
+                            entry<HomeDetail> {
+                                HomeDetailScreen(
+                                    onBackClick = { backStack.removeLastOrNull() },
+                                    modifier = screenModifier
+                                )
+                            }
+                            entry<NoteList> {
                                 NoteListScreen(
-                                    onNoteClick = { id ->
-                                        backStack.add(NoteDetail(id))
-                                    },
-                                    onCreateClick = {
-                                        backStack.add(NoteCreate)
-                                    },
-                                    modifier = screenModifier,
+                                    onNoteClick = { id -> backStack.add(NoteDetail(id)) },
+                                    onCreateClick = { backStack.add(NoteCreate) },
+                                    modifier = screenModifier
                                 )
                             }
-
-                            is NoteDetail -> NavEntry(route) {
+                            entry<NoteDetail> { args ->
                                 NoteDetailScreen(
-                                    noteId = route.id,
-                                    onBackClick = {
-                                        backStack.removeLastOrNull()
-                                    },
-                                    onEditClick = {
-                                        backStack.add(NoteEdit(route.id))
-                                    },
-                                    modifier = screenModifier,
+                                    noteId = args.id,
+                                    onBackClick = { backStack.removeLastOrNull() },
+                                    onEditClick = { backStack.add(NoteEdit(args.id)) },
+                                    modifier = screenModifier
                                 )
                             }
-
-                            is NoteEdit -> NavEntry(route) {
+                            entry<NoteEdit> { args ->
                                 NoteEditScreen(
-                                    noteId = route.id,
-                                    onBackClick = {
-                                        backStack.removeLastOrNull()
-                                    },
-                                    onSaveClick = {
-                                        backStack.removeLastOrNull()
-                                    },
-                                    modifier = screenModifier,
+                                    noteId = args.id,
+                                    onBackClick = { backStack.removeLastOrNull() },
+                                    onSaveClick = { backStack.removeLastOrNull() },
+                                    modifier = screenModifier
                                 )
                             }
-
-                            is NoteCreate -> NavEntry(route) {
+                            entry<NoteCreate> {
                                 NoteCreateScreen(
-                                    onBackClick = {
-                                        backStack.removeLastOrNull()
-                                    },
+                                    onBackClick = { backStack.removeLastOrNull() },
                                     onNoteCreated = { id ->
                                         backStack.clear()
                                         backStack.addAll(listOf(NoteList, NoteDetail(id)))
                                     },
-                                    modifier = screenModifier,
+                                    modifier = screenModifier
                                 )
                             }
-
-                            else -> NavEntry(route) { Text("Unknown route") }
                         }
-
-                    }
+                    )
                 }
             }
         }

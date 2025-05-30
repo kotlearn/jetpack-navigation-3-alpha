@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="jetpack_navigation_3.navigation2" target="21" />
+      <module name="jetpack_navigation_3.navigation3" target="21" />
+      <module name="jetpack_navigation_3.navigation3-bottomnav" target="21" />
+      <module name="jetpack_navigation_3.notes" target="21" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
