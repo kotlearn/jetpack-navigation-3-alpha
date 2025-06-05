@@ -19,11 +19,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,7 +33,7 @@ fun NoteListScreen(
     onCreateClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val notes = remember { NoteRepository.getAllNotes() }
+    val notes by NoteRepository.notes.collectAsStateWithLifecycle(emptyList())
 
     Column(modifier) {
         TopAppBar(

@@ -35,10 +35,10 @@ import androidx.compose.ui.unit.dp
 fun NoteEditScreen(
     noteId: Long,
     onBackClick: () -> Unit,
-    onSaveClick: (Note) -> Unit,
+    onSaveClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val originalNote = remember(noteId) { NoteRepository.getNoteById(noteId) }
+    val originalNote = remember(noteId) { NoteRepository.getNoteByIdImmediate(noteId) }
 
     var title by rememberSaveable { mutableStateOf(originalNote?.title.orEmpty()) }
     var content by rememberSaveable { mutableStateOf(originalNote?.content.orEmpty()) }
@@ -91,7 +91,8 @@ fun NoteEditScreen(
 
             Button(
                 onClick = {
-                    onSaveClick(originalNote.copy(title = title, content = content))
+                    NoteRepository.updateNote(originalNote.copy(title = title, content = content))
+                    onSaveClick()
                 },
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {

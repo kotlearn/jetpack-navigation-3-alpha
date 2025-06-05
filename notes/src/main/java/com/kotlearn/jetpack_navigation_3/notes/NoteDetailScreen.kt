@@ -18,11 +18,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,8 +33,9 @@ fun NoteDetailScreen(
     onBackClick: () -> Unit,
     onEditClick: () -> Unit,
     modifier: Modifier = Modifier,
+    showBackButton: Boolean = true,
 ) {
-    val note = remember(noteId) { NoteRepository.getNoteById(noteId) }
+    val note by NoteRepository.getNoteById(noteId).collectAsStateWithLifecycle(null)
 
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -44,11 +47,13 @@ fun NoteDetailScreen(
                 Text(note?.title.orEmpty())
             },
             navigationIcon = {
-                IconButton(onClick = onBackClick) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                        contentDescription = "Back"
-                    )
+                if (showBackButton) {
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
                 }
             },
             windowInsets = WindowInsets(0),
@@ -62,7 +67,7 @@ fun NoteDetailScreen(
             )
         } else {
             Text(
-                text = note.content,
+                text = note?.content.orEmpty(),
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
